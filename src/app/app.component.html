@@ -52,7 +52,20 @@
     color: var(--gray-700);
   }
 
-  main {
+  a {
+    color: var(--bright-blue);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: var(--gray-400);
+  }
+
+  main, footer, .results {
     width: 100%;
     min-height: 100%;
     display: flex;
@@ -63,11 +76,32 @@
     position: relative;
   }
 
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .left-side {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 1.5rem;
+    max-width: 380px;
+  }
+
+  .right-side {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 1.5rem;
+  }
+
   .content {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    max-width: 700px;
+    max-width: 1024px;
     margin-bottom: 3rem;
   }
 
@@ -85,70 +119,6 @@
     margin-inline: 0.5rem;
   }
 
-  .pill-group {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-  }
-
-  .pill {
-    display: flex;
-    align-items: center;
-    --pill-accent: var(--bright-blue);
-    background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
-    color: var(--pill-accent);
-    padding-inline: 0.75rem;
-    padding-block: 0.375rem;
-    border-radius: 2.75rem;
-    border: 0;
-    transition: background 0.3s ease;
-    font-family: var(--inter-font);
-    font-size: 0.875rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 1.4rem;
-    letter-spacing: -0.00875rem;
-    text-decoration: none;
-  }
-
-  .pill:hover {
-    background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
-  }
-
-  .pill-group .pill:nth-child(6n + 1) {
-    --pill-accent: var(--bright-blue);
-  }
-  .pill-group .pill:nth-child(6n + 2) {
-    --pill-accent: var(--french-violet);
-  }
-  .pill-group .pill:nth-child(6n + 3),
-  .pill-group .pill:nth-child(6n + 4),
-  .pill-group .pill:nth-child(6n + 5) {
-    --pill-accent: var(--hot-red);
-  }
-
-  .pill-group svg {
-    margin-inline-start: 0.25rem;
-  }
-
-  .social-links {
-    display: flex;
-    align-items: center;
-    gap: 0.73rem;
-    margin-top: 1.5rem;
-  }
-
-  .social-links path {
-    transition: fill 0.3s ease;
-    fill: var(--gray-400);
-  }
-
-  .social-links a:hover svg path {
-    fill: var(--gray-900);
-  }
-
   @media screen and (max-width: 650px) {
     .content {
       flex-direction: column;
@@ -163,21 +133,108 @@
     }
   }
 
-  .dice-image {
-    width: 100%;
-    max-width: 150px;
+  .logo-image {
+    align-self: last baseline;
+    width: 45px;
+  }
+
+  .die-image {
+    width: 1.5rem;
+    min-width: 45px;
+  }
+
+  .credits {
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 0.75rem;
+    color: var(--gray-400);
+  }
+
+  .dice-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5em;
+  }
+
+  .modifiers {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5em;
+  }
+  
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 </style>
 
 <main class="main">
   <div class="content">
     <div class="left-side">
-      lefty
+      <div class="title">
+        <img src="assets/rolling-dices.svg" alt="Rolling dices" class="logo-image"/>
+        <h1>Dice Calculator</h1>
+      </div>
+      
+      <p>Welcome to dice calculator. Use the contols to the left to pick dice, then calculate the distribution. Source available on <a target="repo" href="https://github.com/louis-byers/dice-calculator/">Github</a>.</p>
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>
     <div class="right-side">
-      <img src="assets/rolling-dices.svg" alt="Rolling dices" class="dice-image"/>
+      <h2>Add Dice</h2>
+      
+      <div class="dice-form">
+        <div class="dice-selector" *ngFor="let die of [4,6,8,10,12,20]">
+          <button type="button" (click)="removeDie(die)" ariaLabel="remove d{{die}}" [disabled]="!diceEquation.dice.includes(die)">-</button>
+          <img class="die-image" src="assets/d{{die}}.svg" alt="d{{die}}" />
+          <button type="button" (click)="addDie(die)" ariaLabel="add d{{die}}" [disabled]="overLimit()">+</button>
+        </div>
+        <div class="dice-selector">
+          <button type="button" (click)="removeDie(100)" aria-label="remove d100" [disabled]="!diceEquation.dice.includes(100)">-</button>
+          <img class="die-image" src="assets/d10.svg" alt="d10" />
+          <img class="die-image" src="assets/d10.svg" alt="d10" />
+          <button type="button" (click)="addDie(100)" aria-label="add d100" [disabled]="overLimit()">+</button>
+        </div>
+
+        <div class="modifiers">
+          <button type="button" (click)="addModifier(-1)" aria-label="decrement modifier">-</button>
+          <span>Modifier: @if (diceEquation.modifier > 0) {<span>+</span>} {{ diceEquation.modifier }}</span>
+          <button type="button" (click)="addModifier(1)" aria-label="increment modifier">+</button>
+        </div>
+      
+        <div class="controls">
+          <button class="calculate-button" type="button" (click)="updateResults()" [disabled]="overLimit()">Calculate</button>
+          <button class="clear-button" type="button" (click)="reset()">Clear</button>
+        </div>
+      </div>
+      @if (overLimit()) {
+        <div class="dice-limit">Too many dice, remove some.</div>
+      }
+      <div class="dice-equation">{{ printEquation() }}</div>
     </div>
-    <div>Icons made by Delapouite.</div>
   </div>
 </main>
+<div class="results" *ngIf="diceResult.totalResults > 0">
+  <div class="results-container">
+    <div class="results-header">
+      <h2>Results</h2>
+    </div>
+    <div class="results-content">
+      <span class="results-total">Total Possible Results: {{ (diceResult.resultSet | keyvalue).length }}</span>
+      <span class="results-total"> Total Possible Rolls: {{ diceResult.totalResults }}</span>
+      <span class="results-total"> Calculation Time: {{ diceResult.calculationTime / 1000 }} seconds</span>
+      <ul>
+        <li *ngFor="let result of getDisplayList()">
+          <span class="result">{{ result.key }}:</span>
+          <span class="result-count">&nbsp;{{ result.count }}</span>
+          <span class="result-percent">&nbsp; -- {{ result.percentage }} %</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="credits">Icons made by Delapouite and Skoll. Obtained from: <a href="https://game-icons.net/tags/dice.html" target="icons">Game Icons</a> </div>
+</footer>

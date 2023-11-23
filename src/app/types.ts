@@ -9,4 +9,5 @@ export type DiceResult = {
         [key: number]: number;
     };
     totalResults: number;
+    calculationTime: number;
 }

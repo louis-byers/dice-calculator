@@ -1,8 +1,9 @@
 import { DiceEquation, DiceResult } from "./types";
 
-export const MAX_ITERATIONS = 100_000;
+export const MAX_ITERATIONS = 65_000_000;
 
 export function calculateResults(equation: DiceEquation): DiceResult {
+    const start = performance.now();
     const resultSet: { [key: number]: number } = {};
     
     const results = getDieValuesRecursive(0, equation.dice);
@@ -14,11 +15,13 @@ export function calculateResults(equation: DiceEquation): DiceResult {
             resultSet[valueToRecord] = 1;
         }
     }
+    const end = performance.now();
 
     return {
         equation,
         resultSet,
-        totalResults: equation.dice.reduce((acc, curr) => acc * curr, 1)
+        totalResults: equation.dice.reduce((acc, curr) => acc * curr, 1),
+        calculationTime: end - start
     };
 }
 
