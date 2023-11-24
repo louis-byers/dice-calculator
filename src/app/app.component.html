@@ -179,7 +179,9 @@
         <h1>Dice Calculator</h1>
       </div>
       
-      <p>Welcome to dice calculator. Use the contols to the left to pick dice, then calculate the distribution. Source available on <a target="repo" href="https://github.com/louis-byers/dice-calculator/">Github</a>.</p>
+      <p>Welcome to dice calculator. Use the contols to pick dice, then calculate the distribution.</p>
+      <p>There is a limit because the calculation algorithm is not very efficient. Depending on your computer the algorithm can take 20ish seconds to generate 60 million iterations.</p>
+      <p>Source available on <a target="repo" href="https://github.com/louis-byers/dice-calculator/">Github</a>.</p>
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>
     <div class="right-side">
@@ -222,13 +224,18 @@
       <h2>Results</h2>
     </div>
     <div class="results-content">
-      <span class="results-total">Total Possible Results: {{ (diceResult.resultSet | keyvalue).length }}</span>
-      <span class="results-total"> Total Possible Rolls: {{ diceResult.totalResults }}</span>
-      <span class="results-total"> Calculation Time: {{ diceResult.calculationTime / 1000 }} seconds</span>
+      <p class="results-total">Total Possible Results: {{ (diceResult.resultSet | keyvalue).length }}</p>
+      <p class="results-total">Total Rolls: {{ diceResult.totalResults | number }}</p>
+      <p class="results-total">Calculation Time: {{ diceResult.calculationTime / 1000 | number: '1.0-6' }} seconds</p>
       <ul>
+        <li>
+          <span class="result">Roll:</span>
+          <span class="result-count">&nbsp;Count</span>
+          <span class="result-percent">&nbsp; -- %</span>
+        </li>
         <li *ngFor="let result of getDisplayList()">
           <span class="result">{{ result.key }}:</span>
-          <span class="result-count">&nbsp;{{ result.count }}</span>
+          <span class="result-count">&nbsp;{{ result.count | number }}</span>
           <span class="result-percent">&nbsp; -- {{ result.percentage }} %</span>
         </li>
       </ul>
