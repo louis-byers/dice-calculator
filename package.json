@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:dice-calculator": "node dist/dice-calculator/server/server.mjs"
+    "serve:ssr:dice-calculator": "node dist/dice-calculator/server/server.mjs",
+    "aws:cdk": "npm run build && cd infra && cdk --require-approval never"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +22,7 @@
     "@angular/platform-server": "^17.0.0",
     "@angular/router": "^17.0.0",
     "@angular/ssr": "^17.0.3",
+    "aws-cdk": "^2.111.0",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
