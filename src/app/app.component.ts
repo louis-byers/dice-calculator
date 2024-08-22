@@ -9,7 +9,7 @@ import { calculateResults, isPastMaxIterations } from './calculator';
   standalone: true,
   imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
   @Input()
@@ -28,21 +28,20 @@ export class AppComponent {
     this.diceEquationModifier = 0;
     this.diceEquation = {
       dice: [],
-      modifier: this.diceEquationModifier 
-    }
+      modifier: this.diceEquationModifier,
+    };
     this.diceResult = {
       equation: this.diceEquation,
       resultSet: {},
       totalResults: 0,
-      calculationTime: 0
-    }
+      calculationTime: 0,
+    };
   }
 
   // all these functions mutate the diceEquation dice array in place
   addDie(die: number) {
     this.diceEquation.dice.push(die);
     this.diceEquation.dice.sort((a, b) => a - b);
-
   }
 
   removeDie(die: number) {
@@ -56,8 +55,8 @@ export class AppComponent {
     this.diceEquation.modifier += modifier;
   }
 
-  updateResults() {
-    this.diceResult = calculateResults(this.diceEquation);
+  async updateResults() {
+    this.diceResult = await calculateResults(this.diceEquation);
   }
 
   overLimit() {
@@ -65,15 +64,20 @@ export class AppComponent {
   }
 
   getDisplayList() {
-    const sortedKeys = Object.keys(this.diceResult.resultSet).map(key => parseInt(key)).sort((a, b) => a - b);
-    return sortedKeys.map(key => {
+    const sortedKeys = Object.keys(this.diceResult.resultSet)
+      .map((key) => parseInt(key))
+      .sort((a, b) => a - b);
+    return sortedKeys.map((key) => {
       const count = this.diceResult.resultSet[key];
-      const percentage = this.generatePercentageToOneDecimal(count, this.diceResult.totalResults);
+      const percentage = this.generatePercentageToOneDecimal(
+        count,
+        this.diceResult.totalResults
+      );
       return {
         key,
         count,
-        percentage
-      }
+        percentage,
+      };
     });
   }
 
@@ -95,9 +99,15 @@ export class AppComponent {
       return acc;
     }, {} as { [key: string]: number });
 
-    const dice = Object.keys(dieCounts).map(die => `${dieCounts[die]}d${die}`).join(' + ');
-    const modifier = this.diceEquation.modifier !== 0 ? this.diceEquation.modifier > 0 ? ` + ${this.diceEquation.modifier}` : ` ${this.diceEquation.modifier}` : '';
+    const dice = Object.keys(dieCounts)
+      .map((die) => `${dieCounts[die]}d${die}`)
+      .join(' + ');
+    const modifier =
+      this.diceEquation.modifier !== 0
+        ? this.diceEquation.modifier > 0
+          ? ` + ${this.diceEquation.modifier}`
+          : ` ${this.diceEquation.modifier}`
+        : '';
     return `${dice}${modifier}`;
   }
-
 }

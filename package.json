@@ -26,7 +26,8 @@
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.2"
+    "zone.js": "~0.14.2",
+    "dice-roll-generator": "file:src/assets/pkg/"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.3",
