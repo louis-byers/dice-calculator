@@ -42,9 +42,9 @@
     line-height: 100%;
     letter-spacing: -0.125rem;
     margin: 0;
-    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-      "Segoe UI Symbol";
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol";
   }
 
   p {
@@ -65,7 +65,9 @@
     color: var(--gray-400);
   }
 
-  main, footer, .results {
+  main,
+  footer,
+  .results {
     width: 100%;
     min-height: 100%;
     display: flex;
@@ -163,7 +165,7 @@
     gap: 0.5rem;
     margin-bottom: 0.5em;
   }
-  
+
   .controls {
     display: flex;
     align-items: center;
@@ -175,44 +177,112 @@
   <div class="content">
     <div class="left-side">
       <div class="title">
-        <img src="assets/rolling-dices.svg" alt="Rolling dices" class="logo-image"/>
+        <img
+          src="assets/rolling-dices.svg"
+          alt="Rolling dices"
+          class="logo-image"
+        />
         <h1>Dice Calculator</h1>
       </div>
-      
-      <p>Welcome to dice calculator. Use the contols to pick dice, then calculate the distribution.</p>
-      <p>There is a limit because the calculation algorithm is not very efficient. Depending on your computer the algorithm can take 20ish seconds to generate 60 million iterations.</p>
-      <p>Source available on <a target="repo" href="https://github.com/louis-byers/dice-calculator/">Github</a>.</p>
+
+      <p>
+        Welcome to dice calculator. Use the contols to pick dice, then calculate
+        the distribution.
+      </p>
+      <p>
+        There is a limit because the calculation algorithm is not very
+        efficient. Depending on your computer the algorithm can take 20ish
+        seconds to generate 60 million iterations.
+      </p>
+      <p>
+        Source available on
+        <a target="repo" href="https://github.com/louis-byers/dice-calculator/"
+          >Github</a
+        >.
+      </p>
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>
     <div class="right-side">
       <h2>Add Dice</h2>
-      
+
       <div class="dice-form">
-        <div class="dice-selector" *ngFor="let die of [4,6,8,10,12,20]">
-          <button type="button" (click)="removeDie(die)" ariaLabel="remove d{{die}}" [disabled]="!diceEquation.dice.includes(die)">-</button>
-          <img class="die-image" src="assets/d{{die}}.svg" alt="d{{die}}" />
-          <button type="button" (click)="addDie(die)" ariaLabel="add d{{die}}" [disabled]="overLimit()">+</button>
+        <div class="dice-selector" *ngFor="let die of [4, 6, 8, 10, 12, 20]">
+          <button
+            type="button"
+            (click)="removeDie(die)"
+            ariaLabel="remove d{{ die }}"
+            [disabled]="!diceEquation.dice.includes(die)"
+          >
+            -
+          </button>
+          <img class="die-image" src="assets/d{{ die }}.svg" alt="d{{ die }}" />
+          <button
+            type="button"
+            (click)="addDie(die)"
+            ariaLabel="add d{{ die }}"
+            [disabled]="overLimit()"
+          >
+            +
+          </button>
         </div>
         <div class="dice-selector">
-          <button type="button" (click)="removeDie(100)" aria-label="remove d100" [disabled]="!diceEquation.dice.includes(100)">-</button>
+          <button
+            type="button"
+            (click)="removeDie(100)"
+            aria-label="remove d100"
+            [disabled]="!diceEquation.dice.includes(100)"
+          >
+            -
+          </button>
           <img class="die-image" src="assets/d10.svg" alt="d10" />
           <img class="die-image" src="assets/d10.svg" alt="d10" />
-          <button type="button" (click)="addDie(100)" aria-label="add d100" [disabled]="overLimit()">+</button>
+          <button
+            type="button"
+            (click)="addDie(100)"
+            aria-label="add d100"
+            [disabled]="overLimit()"
+          >
+            +
+          </button>
         </div>
 
         <div class="modifiers">
-          <button type="button" (click)="addModifier(-1)" aria-label="decrement modifier">-</button>
-          <span>Modifier: @if (diceEquation.modifier > 0) {<span>+</span>} {{ diceEquation.modifier }}</span>
-          <button type="button" (click)="addModifier(1)" aria-label="increment modifier">+</button>
+          <button
+            type="button"
+            (click)="addModifier(-1)"
+            aria-label="decrement modifier"
+          >
+            -
+          </button>
+          <span
+            >Modifier: @if (diceEquation.modifier > 0) {<span>+</span>}
+            {{ diceEquation.modifier }}</span
+          >
+          <button
+            type="button"
+            (click)="addModifier(1)"
+            aria-label="increment modifier"
+          >
+            +
+          </button>
         </div>
-      
+
         <div class="controls">
-          <button class="calculate-button" type="button" (click)="updateResults()" [disabled]="overLimit()">Calculate</button>
-          <button class="clear-button" type="button" (click)="reset()">Clear</button>
+          <button
+            class="calculate-button"
+            type="button"
+            (click)="updateResults()"
+            [disabled]="overLimit()"
+          >
+            Calculate
+          </button>
+          <button class="clear-button" type="button" (click)="reset()">
+            Clear
+          </button>
         </div>
       </div>
       @if (overLimit()) {
-        <div class="dice-limit">Too many dice, remove some.</div>
+      <div class="dice-limit">Too many dice, remove some.</div>
       }
       <div class="dice-equation">{{ printEquation() }}</div>
     </div>
@@ -224,9 +294,16 @@
       <h2>Results</h2>
     </div>
     <div class="results-content">
-      <p class="results-total">Total Possible Results: {{ (diceResult.resultSet | keyvalue).length }}</p>
-      <p class="results-total">Total Rolls: {{ diceResult.totalResults | number }}</p>
-      <p class="results-total">Calculation Time: {{ diceResult.calculationTime / 1000 | number: '1.0-6' }} seconds</p>
+      <p class="results-total">
+        Total Possible Results: {{ (diceResult.resultSet | keyvalue).length }}
+      </p>
+      <p class="results-total">
+        Total Rolls: {{ diceResult.totalResults | number }}
+      </p>
+      <p class="results-total">
+        Calculation Time:
+        {{ diceResult.calculationTime / 1000 | number : "1.0-6" }} seconds
+      </p>
       <ul>
         <li>
           <span class="result">Roll:</span>
@@ -236,12 +313,22 @@
         <li *ngFor="let result of getDisplayList()">
           <span class="result">{{ result.key }}:</span>
           <span class="result-count">&nbsp;{{ result.count | number }}</span>
-          <span class="result-percent">&nbsp; -- {{ result.percentage }} %</span>
+          <span class="result-percent"
+            >&nbsp; -- {{ result.percentage }} %</span
+          >
+          <span class="result-bar"
+            >&nbsp; / {{ result.better }}% of rolls are better!
+          </span>
         </li>
       </ul>
     </div>
   </div>
 </div>
 <footer>
-  <div class="credits">Icons made by Delapouite and Skoll. Obtained from: <a href="https://game-icons.net/tags/dice.html" target="icons">Game Icons</a> </div>
+  <div class="credits">
+    Icons made by Delapouite and Skoll. Obtained from:
+    <a href="https://game-icons.net/tags/dice.html" target="icons"
+      >Game Icons</a
+    >
+  </div>
 </footer>
