@@ -1,4 +1,4 @@
-import { DiceEquation, DiceResult } from './types';
+import { DiceEquation, DiceResult, DieRoll } from './types';
 
 export const MAX_ITERATIONS = 65_000_000;
 
@@ -8,11 +8,16 @@ export function calculateResults(equation: DiceEquation): DiceResult {
 
   const results = getDieValuesRecursive(0, equation.dice);
   for (const result of results) {
-    const valueToRecord = Math.max(0, result + equation.modifier);
+    const valueToRecord = Math.max(0, result.result + equation.modifier);
     if (resultSet[valueToRecord]) {
       resultSet[valueToRecord].resultCount++;
+      resultSet[valueToRecord].withMaxDieCount += result.containsMaxDie ? 1 : 0;
     } else {
-      resultSet[valueToRecord] = { resultCount: 1, percentage: 0 };
+      resultSet[valueToRecord] = {
+        resultCount: 1,
+        percentageBetter: 0,
+        withMaxDieCount: result.containsMaxDie ? 1 : 0,
+      };
     }
   }
   const totalResults = equation.dice.reduce((acc, curr) => acc * curr, 1);
@@ -20,7 +25,7 @@ export function calculateResults(equation: DiceEquation): DiceResult {
   [...Object.keys(resultSet)]
     .sort((a, b) => +b - +a)
     .reduce((acc, key) => {
-      resultSet[+key].percentage = generatePercentageToOneDecimal(
+      resultSet[+key].percentageBetter = generatePercentageToOneDecimal(
         acc,
         totalResults
       );
@@ -42,19 +47,29 @@ export const isPastMaxIterations = (equation: DiceEquation) => {
   return diceCount > MAX_ITERATIONS;
 };
 
-const getDieValues = (die: number) => {
-  return [...Array(die)].map((_, i) => i + 1);
+export const getDieValues = (die: number) => {
+  return [...Array(die)].map((_, i, arr) => {
+    return { value: i + 1, isMax: i === arr.length - 1 };
+  });
 };
 
 const getDieValuesRecursive = (
   startingValue: number,
-  dice: number[]
-): number[] => {
+  dice: number[],
+  isDieMax: boolean = false
+): DieRoll[] => {
   if (dice.length === 1) {
-    return getDieValues(dice[0]).map((dieValue) => dieValue + startingValue);
+    return getDieValues(dice[0]).map((dieValue, _, arr) => ({
+      result: dieValue.value + startingValue,
+      containsMaxDie: dieValue.isMax || isDieMax,
+    }));
   }
-  return getDieValues(dice[0]).flatMap((dieValue) =>
-    getDieValuesRecursive(dieValue + startingValue, dice.slice(1))
+  return getDieValues(dice[0]).flatMap((dieValue, _, arr) =>
+    getDieValuesRecursive(
+      dieValue.value + startingValue,
+      dice.slice(1),
+      dieValue.isMax || isDieMax
+    )
   );
 };
 

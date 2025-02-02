@@ -309,6 +309,9 @@
           <span class="result">Roll:</span>
           <span class="result-count">&nbsp;Count</span>
           <span class="result-percent">&nbsp; -- %</span>
+          <span class="result-max-die-info"
+            >Results that contained a die at max</span
+          >
         </li>
         <li *ngFor="let result of getDisplayList()">
           <span class="result">{{ result.key }}:</span>
@@ -318,6 +321,11 @@
           >
           <span class="result-bar"
             >&nbsp; / {{ result.better }}% of rolls are better!
+          </span>
+          <span class="result-max-die-info"
+            >&nbsp; / {{ result.maxDieCount }} rolls had a die at max ({{
+              result.maxDiePercentage
+            }}% of rolls at this value)
           </span>
         </li>
       </ul>

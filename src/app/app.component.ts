@@ -7,7 +7,7 @@ import { calculateResults, isPastMaxIterations } from './calculator';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
@@ -69,16 +69,22 @@ export class AppComponent {
       .sort((a, b) => a - b);
     return sortedKeys.map((key) => {
       const count = this.diceResult.resultSet[key].resultCount;
+      const maxDieCount = this.diceResult.resultSet[key].withMaxDieCount;
       const percentage = this.generatePercentageToOneDecimal(
         count,
         this.diceResult.totalResults
       );
-      const better = this.diceResult.resultSet[key].percentage;
+      const better = this.diceResult.resultSet[key].percentageBetter;
       return {
         key,
         count,
         percentage,
         better,
+        maxDieCount,
+        maxDiePercentage: this.generatePercentageToOneDecimal(
+          maxDieCount,
+          count
+        ),
       };
     });
   }
