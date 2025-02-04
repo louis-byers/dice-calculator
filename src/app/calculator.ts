@@ -11,13 +11,19 @@ export function calculateResults(equation: DiceEquation): DiceResult {
     const valueToRecord = Math.max(0, result.result + equation.modifier);
     if (resultSet[valueToRecord]) {
       resultSet[valueToRecord].resultCount++;
-      resultSet[valueToRecord].withMaxDieCount += result.containsMaxDie ? 1 : 0;
     } else {
       resultSet[valueToRecord] = {
         resultCount: 1,
         percentageBetter: 0,
-        withMaxDieCount: result.containsMaxDie ? 1 : 0,
+        maxDieCounts: {},
       };
+    }
+    if (result.numberOfDiceAtMax > 0) {
+      if (resultSet[valueToRecord].maxDieCounts[result.numberOfDiceAtMax]) {
+        resultSet[valueToRecord].maxDieCounts[result.numberOfDiceAtMax]++;
+      } else {
+        resultSet[valueToRecord].maxDieCounts[result.numberOfDiceAtMax] = 1;
+      }
     }
   }
   const totalResults = equation.dice.reduce((acc, curr) => acc * curr, 1);
@@ -56,19 +62,19 @@ export const getDieValues = (die: number) => {
 const getDieValuesRecursive = (
   startingValue: number,
   dice: number[],
-  isDieMax: boolean = false
+  maxDieCount: number = 0
 ): DieRoll[] => {
   if (dice.length === 1) {
     return getDieValues(dice[0]).map((dieValue, _, arr) => ({
       result: dieValue.value + startingValue,
-      containsMaxDie: dieValue.isMax || isDieMax,
+      numberOfDiceAtMax: maxDieCount + (dieValue.isMax ? 1 : 0),
     }));
   }
   return getDieValues(dice[0]).flatMap((dieValue, _, arr) =>
     getDieValuesRecursive(
       dieValue.value + startingValue,
       dice.slice(1),
-      dieValue.isMax || isDieMax
+      maxDieCount + (dieValue.isMax ? 1 : 0)
     )
   );
 };

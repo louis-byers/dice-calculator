@@ -9,7 +9,7 @@ export type DiceResult = {
     [key: number]: {
       resultCount: number;
       percentageBetter: number;
-      withMaxDieCount: number;
+      maxDieCounts: { [key: number]: number };
     };
   };
   totalResults: number;
@@ -18,5 +18,5 @@ export type DiceResult = {
 
 export type DieRoll = {
   result: number;
-  containsMaxDie: boolean;
+  numberOfDiceAtMax: number;
 };

@@ -69,7 +69,7 @@ export class AppComponent {
       .sort((a, b) => a - b);
     return sortedKeys.map((key) => {
       const count = this.diceResult.resultSet[key].resultCount;
-      const maxDieCount = this.diceResult.resultSet[key].withMaxDieCount;
+      const maxDieCount = this.diceResult.resultSet[key].maxDieCounts;
       const percentage = this.generatePercentageToOneDecimal(
         count,
         this.diceResult.totalResults
@@ -81,10 +81,6 @@ export class AppComponent {
         percentage,
         better,
         maxDieCount,
-        maxDiePercentage: this.generatePercentageToOneDecimal(
-          maxDieCount,
-          count
-        ),
       };
     });
   }

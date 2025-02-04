@@ -322,10 +322,13 @@
           <span class="result-bar"
             >&nbsp; / {{ result.better }}% of rolls are better!
           </span>
-          <span class="result-max-die-info"
-            >&nbsp; / {{ result.maxDieCount }} rolls had a die at max ({{
-              result.maxDiePercentage
-            }}% of rolls at this value)
+          <span
+            class="result-max-die-info"
+            *ngFor="let item of result.maxDieCount | keyvalue"
+          >
+            >&nbsp; / {{ item.value }} rolls ({{
+              generatePercentageToOneDecimal(item.value, result.count)
+            }}%) had {{ item.key }} die at max
           </span>
         </li>
       </ul>
